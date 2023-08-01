@@ -51,11 +51,17 @@ Mobile Day View / VOC
 # Hotkeys
 
 P - PM 2.5 View
+
 V - VOC view
+
 D - Day view
+
 W - Week view
+
 M - Month view
+
 Y - Year view
+
 
 # Future Considerations
 
