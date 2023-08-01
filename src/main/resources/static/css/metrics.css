@@ -1,0 +1,52 @@
+:root {
+    --button-padding: 2px 5px;
+    --button-bg-color: #eee;
+    --button-radius: 5px;
+    --button-selected-bg-color: #aaa;
+    --button-selected-color: white;
+    --icon-fill: #000;
+    --icon-fill-hover: #555;
+}
+
+body {
+    background-color: white;
+    color: black;
+}
+
+.data-type-buttons,
+.time-range-buttons {
+    display: flex;
+}
+
+.data-type-buttons {
+    justify-content: flex-start;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.time-range-buttons {
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.data-type-button, .time-range-button {
+    padding: var(--button-padding);
+    border: none;
+    border-radius: var(--button-radius);
+    background-color: var(--button-bg-color);
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 5px; /* For data-type-button */
+    margin-left: 5px;  /* For time-range-button */
+}
+
+.data-type-button.selected, .time-range-button.selected {
+    background-color: var(--button-selected-bg-color);
+    color: var(--button-selected-color);
+}
+
+#myChart {
+    max-height: 70vh;
+}
+
