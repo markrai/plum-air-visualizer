@@ -45,8 +45,17 @@ I suggest running on  8081, as **Plum Air Analytics** would presumably be runnin
 Dekstop Week View / PM 2.5
 
 ![](src/main/resources/img/mobile.png)
+
 Mobile Day View / VOC
 
+# Hotkeys
+
+P - PM 2.5 View
+V - VOC view
+D - Day view
+W - Week view
+M - Month view
+Y - Year view
 
 # Future Considerations
 
