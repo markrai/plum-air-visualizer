@@ -13,13 +13,14 @@
 <div class="data-type-buttons">
     <button id="pm25-button" class="data-type-button selected" data-data-type="pm25">PM 2.5</button>
     <button id="voc-button" class="data-type-button" data-data-type="voc">VOC</button>
+    <button id="weather-button" class="data-type-button" data-data-type="weather">Temp/Hum</button>
 </div>
 
 <div class="time-range-buttons">
-    <button id="day-button" class="time-range-button selected" data-time-range="day">Day</button>
-    <button id="week-button" class="time-range-button" data-time-range="week">Week</button>
-    <button id="month-button" class="time-range-button" data-time-range="month">Month</button>
-    <button id="year-button" class="time-range-button" data-time-range="year">Year</button>
+    <button id="day-button" class="time-range-button selected" data-time-range="day" data-short="D"><span>Day</span></button>
+    <button id="week-button" class="time-range-button" data-time-range="week" data-short="W"><span>Week</span></button>
+    <button id="month-button" class="time-range-button" data-time-range="month" data-short="M"><span>Month</span></button>
+    <button id="year-button" class="time-range-button" data-time-range="year" data-short="Y"><span>Year</span></button>
 </div>
 <canvas id="myChart" style="height: 60vh;">
 </canvas>
@@ -30,6 +31,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
 <script src="/js/main.js" type="module"></script>
 <script src="/js/logo.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+
 
 <div id="logo-container" style="position: fixed; bottom: 0; right: 10; width: 100px;"></div>
 </body>

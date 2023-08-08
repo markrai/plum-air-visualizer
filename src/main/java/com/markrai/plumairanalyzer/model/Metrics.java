@@ -36,6 +36,22 @@ public class Metrics {
     @Column(name = "gas_680")
     private Float gas680;
 
+    @Column(name = "temperature")
+    private Float temperature;
+
+    @Column(name = "humidity")
+    private Float humidity;
+
+    @Column(name = "outdoor_temperature")
+    private Float outdoorTemperature;
+
+    @Column(name = "outdoor_humidity")
+    private Float outdoorHumidity;
+
+    @Column(name = "co2")
+    private Float co2;
+
+
     @ManyToOne
     @JoinColumn(name = "detector_id", insertable = false, updatable = false)
     private Detector detector;
@@ -110,6 +126,46 @@ public class Metrics {
 
     public void setGas680(Float gas680) {
         this.gas680 = gas680;
+    }
+
+    public Float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Float temperature) {
+        this.temperature = temperature;
+    }
+
+    public Float getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(Float humidity) {
+        this.humidity = humidity;
+    }
+
+    public Float getCo2() {
+        return co2;
+    }
+
+    public Float getOutdoorTemperature() {
+        return outdoorTemperature;
+    }
+
+    public void setOutdoorTemperature(Float outdoorTemperature) {
+        this.outdoorTemperature = outdoorTemperature;
+    }
+
+    public Float getOutdoorHumidity() {
+        return outdoorHumidity;
+    }
+
+    public void setOutdoorHumidity(Float outdoorHumidity) {
+        this.outdoorHumidity = outdoorHumidity;
+    }
+
+    public void setCo2(Float co2) {
+        this.co2 = co2;
     }
 
     public Detector getDetector() {
