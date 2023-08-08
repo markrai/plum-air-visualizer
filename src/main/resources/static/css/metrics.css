@@ -50,3 +50,14 @@ body {
     max-height: 70vh;
 }
 
+
+@media (max-width: 768px) {
+    .time-range-button::before {
+        content: attr(data-short);
+        display: inline-block;
+    }
+
+    .time-range-button span {
+        display: none;
+    }
+}

@@ -1,6 +1,6 @@
-import {
-    updateChart
-} from '/js/chart.js';
+import { updatePM25Chart } from '/js/pm25Chart.js';
+import { updateVOCChart } from '/js/vocChart.js';
+import { updateWeatherChart } from '/js/weatherChart.js';
 
 export function addEventListeners(chart, allData, timeRange, dataType, ctx) {
     document.addEventListener('keydown', function(event) {
@@ -24,9 +24,8 @@ export function addEventListeners(chart, allData, timeRange, dataType, ctx) {
                 document.getElementById('year-button').click();
                 break;
             case 't':
-                document.getElementById('theme-toggle').click();
+                document.getElementById('weather-button').click();
                 break;
-
         }
     });
 
@@ -41,8 +40,19 @@ export function addEventListeners(chart, allData, timeRange, dataType, ctx) {
 
             timeRange = this.dataset.timeRange || timeRange;
 
-            chart = updateChart(allData, timeRange, dataType, ctx, chart);
-
+            switch (dataType) {
+                case 'pm25':
+                    chart = updatePM25Chart(allData, timeRange, ctx, chart);
+                    break;
+                case 'voc':
+                    chart = updateVOCChart(allData, timeRange, ctx, chart);
+                    break;
+                case 'weather':
+                    chart = updateWeatherChart(allData, timeRange, ctx, chart);
+                    break;
+                default:
+                    console.error('Unknown data type:', dataType);
+            }
         });
     });
 
@@ -57,8 +67,19 @@ export function addEventListeners(chart, allData, timeRange, dataType, ctx) {
 
             dataType = this.dataset.dataType || dataType;
 
-            chart = updateChart(allData, timeRange, dataType, ctx, chart);
-
+            switch (dataType) {
+                case 'pm25':
+                    chart = updatePM25Chart(allData, timeRange, ctx, chart);
+                    break;
+                case 'voc':
+                    chart = updateVOCChart(allData, timeRange, ctx, chart);
+                    break;
+                case 'weather':
+                    chart = updateWeatherChart(allData, timeRange, ctx, chart);
+                    break;
+                default:
+                    console.error('Unknown data type:', dataType);
+            }
         });
     });
 
@@ -67,7 +88,5 @@ export function addEventListeners(chart, allData, timeRange, dataType, ctx) {
         if (dayButton) {
             dayButton.click();
         }
-
     });
-
 }

@@ -1,42 +1,17 @@
+import { luxon } from 'luxon';
+import { pm25Annotations, vocAnnotations, weatherAnnotations, legendColorPlugin } from './chartUtilities.js';
+
 export function makeChart(ctx, data, timeRange, dataType) {
     const defaultGridColor = '#484848';
     const defaultTickColor = '#484848';
-
-    // Prepare annotation for PM2.5
-    const pm25Annotations = {
-        shadeBelow5: {
-            type: 'box',
-            yMin: 0,
-            yMax: 5,
-            backgroundColor: 'rgba(144, 238, 144, 0.1)' // Light green shading
-        },
-        shadeBetween5and15: {
-            type: 'box',
-            yMin: 5,
-            yMax: 15,
-            backgroundColor: 'rgba(255, 255, 0, 0.1)' // Yellow shading
-        },
-        shadeAbove15: {
-            type: 'box',
-            yMin: 15,
-            backgroundColor: 'rgba(255, 0, 0, 0.1)' // Red shading
-        }
-    };
-
-    // Prepare annotation for VOC
-    const vocAnnotations = {
-        shadeAbove100: {
-            type: 'box',
-            yMin: 100,
-            backgroundColor: 'rgba(255, 0, 0, 0.1)' // Red shading
-        }
-    };
 
     var annotations;
     if (dataType === 'pm25') {
         annotations = pm25Annotations;
     } else if (dataType === 'voc') {
         annotations = vocAnnotations;
+    } else if (dataType === 'weather') {
+        annotations = weatherAnnotations;
     }
 
     const backyardData = data
@@ -50,7 +25,6 @@ export function makeChart(ctx, data, timeRange, dataType) {
                     y: avg
                 };
             } else {
-                // no gas680 data for backyard sensor
                 return null;
             }
         })
@@ -70,6 +44,25 @@ export function makeChart(ctx, data, timeRange, dataType) {
             y: dataType === 'pm25' ? item.p2_5Um : item.gas680
         }));
 
+    const livingroomData = data
+        .filter(item => item.detector.name === 'livingroom')
+        .map(item => ({
+            x: item.timestamp,
+            y: dataType === 'pm25' ? item.p2_5Um : item.gas680
+        }));
+
+    const temperatureData = data
+        .map(item => ({
+            x: item.timestamp,
+            y: item.temperature
+        }));
+
+    const humidityData = data
+        .map(item => ({
+            x: item.timestamp,
+            y: item.humidity
+        }));
+
     var unit = 'day';
     var displayFormat = 'MM/dd/yyyy';
     if (timeRange === 'day') {
@@ -77,10 +70,8 @@ export function makeChart(ctx, data, timeRange, dataType) {
         displayFormat = 'h:mm a';
     }
 
-    // Prepare datasets
     var datasets = [];
 
-    // Include Backyard dataset only for PM 2.5
     if (dataType === 'pm25') {
         datasets.push({
             label: 'Backyard ' + dataType.toUpperCase(),
@@ -91,7 +82,6 @@ export function makeChart(ctx, data, timeRange, dataType) {
         });
     }
 
-    // Include Bedroom and Nursery datasets for both PM 2.5 and VOC
     datasets.push({
         label: 'Bedroom ' + dataType.toUpperCase(),
         data: bedroomData,
@@ -104,12 +94,30 @@ export function makeChart(ctx, data, timeRange, dataType) {
         fill: false,
         borderColor: 'rgb(255, 159, 64)',
         tension: 0.1
+    }, {
+        label: 'Livingroom ' + dataType.toUpperCase(),
+        data: livingroomData,
+        fill: false,
+        borderColor: 'rgb(255, 218, 41)',
+        tension: 0.1
+    }, {
+        label: 'Temperature',
+        data: temperatureData,
+        fill: false,
+        borderColor: 'rgb(75, 75, 255)',
+        tension: 0.1
+    }, {
+        label: 'Humidity',
+        data: humidityData,
+        fill: false,
+        borderColor: 'rgb(75, 75, 192)',
+        tension: 0.1
     });
 
     return new Chart(ctx, {
         type: 'line',
         data: {
-            datasets: datasets // Updated datasets
+            datasets: datasets
         },
         options: {
             scales: {
@@ -124,21 +132,21 @@ export function makeChart(ctx, data, timeRange, dataType) {
                     distribution: 'linear',
                     ticks: {
                         source: 'auto',
-                        color: defaultTickColor, // Apply the default tick color
+                        color: defaultTickColor,
                         maxRotation: 45,
                         minRotation: 45
                     },
                     grid: {
-                        color: defaultGridColor // Apply the default grid color
+                        color: defaultGridColor
                     }
                 },
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: defaultTickColor // Apply the default tick color
+                        color: defaultTickColor
                     },
                     grid: {
-                        color: defaultGridColor // Apply the default grid color
+                        color: defaultGridColor
                     }
                 }
             },
@@ -151,7 +159,7 @@ export function makeChart(ctx, data, timeRange, dataType) {
                             var minutes = date.getMinutes();
                             var ampm = hours >= 12 ? 'PM' : 'AM';
                             hours = hours % 12;
-                            hours = hours ? hours : 12; // the hour '0' should be '12'
+                            hours = hours ? hours : 12;
                             minutes = minutes < 10 ? '0' + minutes : minutes;
                             return (hours + ':' + minutes + ' ' + ampm + ', ' +
                                 (date.getMonth() + 1) + '/' +
@@ -160,43 +168,25 @@ export function makeChart(ctx, data, timeRange, dataType) {
                         }
                     }
                 },
-                legendColorPlugin, // This is where you should place the plugin
+                legendColorPlugin,
                 annotation: annotations ? {
                     annotations: annotations
-                } : undefined // Apply the selected annotations
-
+                } : undefined
             },
             responsive: true,
             maintainAspectRatio: false
         }
     });
-
-  applyThemeToChart(chart);
-  return chart;
 }
 
-const legendColorPlugin = {
-    id: 'legendColorPlugin',
-    beforeDraw(chart) {
-        const legend = chart.legend;
-        legend.legendItems.forEach((item, index) => {
-            const dataset = chart.data.datasets[index];
-            item.fillStyle = dataset.borderColor; // Set fillStyle to match borderColor
-            item.strokeStyle = dataset.borderColor; // Set strokeStyle to match borderColor
-        });
-    },
-};
-
-
-
 export function updateChart(allData, timeRange, dataType, ctx, chart) {
-    var now = luxon.DateTime.local(); // get current date/time
+    var now = luxon.DateTime.local();
     var cutoff;
 
     switch (timeRange) {
         case 'day':
             cutoff = now.minus({
-                hours: 12
+                hours: 24
             });
             break;
         case 'week':
@@ -217,30 +207,6 @@ export function updateChart(allData, timeRange, dataType, ctx, chart) {
     }
 
     var filteredData = allData.filter(item => luxon.DateTime.fromISO(item.timestamp) >= cutoff);
-
-    // destroy old chart and make a new one with the filtered data
     chart.destroy();
-    return makeChart(ctx, filteredData, timeRange, dataType); // return the new chart
-
+    return makeChart(ctx, filteredData, timeRange, dataType);
 }
-
-export const darkModeOptions = {
-    scales: {
-        x: {
-            grid: {
-                color: 'white',
-            },
-            ticks: {
-                color: 'white',
-            },
-        },
-        y: {
-            grid: {
-                color: 'white',
-            },
-            ticks: {
-                color: 'white',
-            },
-        },
-    },
-};

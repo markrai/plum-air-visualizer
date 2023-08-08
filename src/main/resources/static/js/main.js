@@ -1,7 +1,7 @@
-import { makeChart, updateChart } from '/js/chart.js';
+import { renderPM25Chart, updatePM25Chart } from '/js/pm25Chart.js';
+import { renderVOCChart, updateVOCChart } from '/js/vocChart.js';
+import { renderWeatherChart, updateWeatherChart } from '/js/weatherChart.js';
 import { addEventListeners } from '/js/events.js';
-
-
 
 var chart; // global chart reference
 var allData; // store all data
@@ -29,8 +29,24 @@ function fetchData() {
             var cutoff = now.startOf('day');
             var initialData = allData.filter(item => luxon.DateTime.fromISO(item.timestamp) >= cutoff);
 
-            chart = makeChart(ctx, initialData, timeRange, dataType); // initial display by day
-            addEventListeners(chart, allData, timeRange, dataType, ctx); // Add this line
+            console.log("in main.js - line 30 - about to call makeChart")
+
+            // Choose the correct chart rendering function based on dataType
+            switch(dataType) {
+                case 'pm25':
+                    chart = renderPM25Chart(ctx, initialData, timeRange);
+                    break;
+                case 'voc':
+                    chart = renderVOCChart(ctx, initialData, timeRange);
+                    break;
+                case 'weather':
+                    chart = renderWeatherChart(ctx, initialData, timeRange);
+                    break;
+                default:
+                    console.error('Unknown data type:', dataType);
+            }
+
+            addEventListeners(chart, allData, timeRange, dataType, ctx);
 
             const dayButton = document.getElementById('day-button');
             if (dayButton) {
@@ -41,7 +57,6 @@ function fetchData() {
 
 // Initially fetch the data and create the chart
 fetchConfig().then(fetchData);
-
 
 // Set an interval to refresh the data every 30 minutes
 setInterval(fetchData, 30 * 60 * 1000);
