@@ -19,10 +19,40 @@ export const pm25Annotations = {
 };
 
 export const vocAnnotations = {
-    shadeAbove100: {
+    shadeBetween0and50: {
         type: 'box',
-        yMin: 100,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)'
+        yMin: 0,
+        yMax: 50,
+        backgroundColor: 'rgba(0, 255, 0, 0.1)' // Green
+    },
+    shadeBetween51and100: {
+        type: 'box',
+        yMin: 51,
+        yMax: 100,
+        backgroundColor: 'rgba(255, 255, 0, 0.1)' // Yellow
+    },
+    shadeBetween101and150: {
+        type: 'box',
+        yMin: 101,
+        yMax: 150,
+        backgroundColor: 'rgba(255, 165, 0, 0.1)' // Orange
+    },
+    shadeBetween151and200: {
+        type: 'box',
+        yMin: 151,
+        yMax: 200,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' // Red
+    },
+    shadeBetween201and300: {
+        type: 'box',
+        yMin: 201,
+        yMax: 300,
+        backgroundColor: 'rgba(128, 0, 128, 0.1)' // Purple
+    },
+    shadeAbove301: {
+        type: 'box',
+        yMin: 301,
+        backgroundColor: 'rgba(75, 0, 130, 0.1)' // Dark Purple
     }
 };
 
