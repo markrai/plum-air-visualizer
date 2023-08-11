@@ -47,10 +47,14 @@ export function renderWeatherChart(ctx, data, timeRange) {
 
     var unit = 'day';
     var displayFormat = 'MM/dd/yyyy';
-    if (timeRange === 'day') {
+    if (timeRange === 'hour') {
+        unit = 'minute';
+        displayFormat = 'h:mm a';
+    } else if (timeRange === 'day') {
         unit = 'hour';
         displayFormat = 'h:mm a';
     }
+
 
     var datasets = [
         {
@@ -143,7 +147,8 @@ export function renderWeatherChart(ctx, data, timeRange) {
                 }
             },
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: true,
+            animation: {duration: 500}
         }
     });
 }
@@ -153,6 +158,11 @@ export function updateWeatherChart(allData, timeRange, ctx, chart) {
     var cutoff;
 
     switch (timeRange) {
+        case 'hour':
+            cutoff = now.minus({
+                hours: 2
+            });
+            break;
         case 'day':
             cutoff = now.minus({
                 hours: 24

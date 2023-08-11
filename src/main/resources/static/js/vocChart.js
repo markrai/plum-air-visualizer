@@ -1,10 +1,15 @@
 import { vocAnnotations, legendColorPlugin } from './chartUtilities.js';
+import PPBtoIndexConverter from './PPBtoIndexConverter.js';
+
+const converter = new PPBtoIndexConverter();
+converter.extrapolateRanges(1000000);
+
 
 function processVOCData(data) {
     const backyardData = data
         .filter(item => item.detector.name === 'backyard')
         .map(item => {
-            return null;  // As per your earlier note, no gas680 data for backyard sensor
+            return null;  // no gas680 data for backyard sensor
         })
         .filter(item => item != null);
 
@@ -22,12 +27,18 @@ function processVOCData(data) {
             y: item.gas680
         }));
 
-    const livingroomData = data
-        .filter(item => item.detector.name === 'livingroom')
-        .map(item => ({
-            x: item.timestamp,
-            y: item.gas680
-        }));
+   const livingroomData = data
+       .filter(item => item.detector.name === 'livingroom')
+       .map(item => {
+           const convertedValue = converter.ppbToIndex(item.gas680);
+           return {
+               x: item.timestamp,
+               y: convertedValue
+           };
+       })
+               .filter(item => item.y !== null); // Filter out any data points with null values
+
+       ;
 
     return {
         backyardData,
@@ -47,10 +58,15 @@ export function renderVOCChart(ctx, data, timeRange) {
 
     var unit = 'day';
     var displayFormat = 'MM/dd/yyyy';
-    if (timeRange === 'day') {
+
+    if (timeRange === 'hour') {
+        unit = 'minute';
+        displayFormat = 'h:mm a';
+    } else if (timeRange === 'day') {
         unit = 'hour';
         displayFormat = 'h:mm a';
     }
+
 
     var datasets = [
         {
@@ -75,6 +91,8 @@ export function renderVOCChart(ctx, data, timeRange) {
             tension: 0.1
         }
     ];
+
+
 
     return new Chart(ctx, {
         type: 'line',
@@ -136,8 +154,9 @@ export function renderVOCChart(ctx, data, timeRange) {
                 }
             },
             responsive: true,
-            maintainAspectRatio: false
-        }
+            maintainAspectRatio: true,
+            animation: {duration: 500}
+            }
     });
 }
 
@@ -146,6 +165,12 @@ export function updateVOCChart(allData, timeRange, ctx, chart) {
     var cutoff;
 
     switch (timeRange) {
+
+    case 'hour':
+        cutoff = now.minus({
+           hours: 2
+            });
+            break;
         case 'day':
             cutoff = now.minus({
                 hours: 24

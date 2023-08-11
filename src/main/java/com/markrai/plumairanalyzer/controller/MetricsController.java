@@ -18,5 +18,5 @@ public class MetricsController {
         return metricsRepository.findAll();
     }
 
-    // additional methods for CRUD operations can be added here
+
 }

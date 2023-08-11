@@ -1,0 +1,57 @@
+.toggle-switch-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Adjusted width */
+    height: 20px; /* Adjusted height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px; /* Match the height to create a rounded effect */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px; /* Adjusted height */
+    width: 16px; /* Adjusted width */
+    left: 2px; /* Adjusted left position */
+    bottom: 2px; /* Adjusted bottom position */
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #B65FCF;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px); /* Adjusted translation to match the width of .switch */
+}
+
+.toggle-label {
+    margin-left: 10px;
+    font-size: 14px;
+}
